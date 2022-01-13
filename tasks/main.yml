@@ -1,0 +1,16 @@
+- name: Import public repository keys
+  ansible.builtin.apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+- name: Register Microsoft SQL Server 2019 repository
+  ansible.builtin.apt_repository:
+    repo: >-
+    deb [arch=amd64,armhf,arm64]
+    https://packages.microsoft.com/ubuntu/20.04/mssql-server-2019 focal main
+- name: Install SQL Server
+  ansible.builtin.apt:
+    name: mssql-server
+    update_cache: yes
+- name: Configure SQL Server
+  shell: /opt/mssql/bin/mssql-conf -n setup accept-eula
+  environment:
+    MSSQL_SA_PASSWORD: "{{ mssql_sa_password }}"
